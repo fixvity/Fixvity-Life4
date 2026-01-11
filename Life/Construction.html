@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Concrete Calculator – World Standard</title>
+<title>Concrete & Construction Calculator – World Standard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -12,6 +12,7 @@
   --card:#ffffff;
   --radius:14px;
   --text:#1f2937;
+  --muted:#6b7280;
 }
 *{box-sizing:border-box}
 body{
@@ -29,23 +30,39 @@ body{
   margin-bottom:20px;
 }
 h1,h2{margin:0 0 10px;color:var(--primary)}
-small{color:#6b7280}
+small{color:var(--muted)}
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
   gap:14px;
 }
-@media(max-width:640px){.grid{grid-template-columns:1fr}}
+@media(max-width:640px){
+  .grid{grid-template-columns:1fr}
+}
 
 .field{display:flex;flex-direction:column}
 .field label{font-size:14px;margin-bottom:6px}
-.field input,.field select{
+
+.input-unit{
+  display:flex;
+  gap:8px;
+}
+.input-unit input{
+  flex:1;
   height:48px;
-  padding:10px;
+  padding:10px 12px;
   font-size:15px;
   border-radius:10px;
   border:1px solid #ddd;
+}
+.input-unit select{
+  width:70px;
+  height:48px;
+  font-size:14px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  background:#fff;
 }
 
 button{
@@ -57,6 +74,7 @@ button{
   border-radius:12px;
   font-size:16px;
   cursor:pointer;
+  margin-top:8px;
 }
 
 .result{
@@ -69,7 +87,7 @@ button{
 }
 
 @media print{
-  button,.controls{display:none}
+  button{display:none}
   body{background:#fff}
   .card{box-shadow:none;border:1px solid #ddd}
 }
@@ -79,61 +97,78 @@ button{
 <body>
 <div class="container">
 
-<!-- HEADER -->
-<div class="card controls">
-<h1>Concrete Calculator</h1>
-<small>Slabs · Columns · Curb & Gutter · Stairs · Rebar — IS / World Standard</small>
-
-<div class="grid">
-  <div class="field">
-    <label>Measurement System</label>
-    <select id="unit">
-      <option value="metric">Metric (m)</option>
-      <option value="imperial">Imperial (ft / in)</option>
-    </select>
-  </div>
-
-  <div class="field">
-    <label>Concrete Grade (IS Standard)</label>
-    <select id="grade">
-      <option value="6">M10 (PCC)</option>
-      <option value="6.8">M15</option>
-      <option value="8" selected>M20 (RCC)</option>
-      <option value="9.2">M25</option>
-      <option value="10">M30</option>
-    </select>
-  </div>
-</div>
-<br>
+<div class="card">
+<h1>Concrete & Construction Calculator</h1>
+<small>Slabs · Columns · Curb & Gutter · Stairs · Rebar — Engineering Accurate</small>
 <button onclick="window.print()">🖨️ Print / Export PDF</button>
 </div>
 
-<!-- SLAB -->
+<!-- SLABS -->
 <div class="card">
 <h2>🧱 Slabs / Footings / Walls</h2>
 <div class="grid">
-  <div class="field"><label>Length</label><input id="slL" type="number"></div>
-  <div class="field"><label>Width</label><input id="slW" type="number"></div>
-  <div class="field"><label>Thickness</label><input id="slT" type="number"></div>
-  <div class="field"><label>Quantity</label><input id="slQ" type="number" value="1"></div>
+  <div class="field">
+    <label>Length</label>
+    <div class="input-unit">
+      <input id="slL" type="number">
+      <select id="slLU"><option value="m">m</option><option value="ft">ft</option></select>
+    </div>
+  </div>
+  <div class="field">
+    <label>Width</label>
+    <div class="input-unit">
+      <input id="slW" type="number">
+      <select id="slWU"><option value="m">m</option><option value="ft">ft</option></select>
+    </div>
+  </div>
+  <div class="field">
+    <label>Thickness</label>
+    <div class="input-unit">
+      <input id="slT" type="number">
+      <select id="slTU">
+        <option value="mm">mm</option>
+        <option value="cm">cm</option>
+        <option value="in">in</option>
+      </select>
+    </div>
+  </div>
+  <div class="field">
+    <label>Quantity</label>
+    <input id="slQ" type="number" value="1">
+  </div>
 </div>
 <button onclick="calcSlab()">Calculate</button>
 <div class="result" id="slabRes">—</div>
 </div>
 
-<!-- CYLINDER -->
+<!-- COLUMN -->
 <div class="card">
 <h2>🟤 Hole / Column / Round Footing</h2>
 <div class="grid">
-  <div class="field"><label>Diameter</label><input id="cyD" type="number"></div>
-  <div class="field"><label>Height</label><input id="cyH" type="number"></div>
-  <div class="field"><label>Quantity</label><input id="cyQ" type="number" value="1"></div>
+  <div class="field">
+    <label>Diameter</label>
+    <div class="input-unit">
+      <input id="cyD" type="number">
+      <select id="cyDU"><option value="m">m</option><option value="ft">ft</option></select>
+    </div>
+  </div>
+  <div class="field">
+    <label>Height</label>
+    <div class="input-unit">
+      <input id="cyH" type="number">
+      <select id="cyHU"><option value="m">m</option><option value="ft">ft</option></select>
+    </div>
+  </div>
+  <div class="field">
+    <label>Quantity</label>
+    <input id="cyQ" type="number" value="1">
+  </div>
 </div>
 <button onclick="calcCylinder()">Calculate</button>
 <div class="result" id="cyRes">—</div>
 </div>
 
-<!-- CURB -->
+<!-- CURB & GUTTER -->
 <div class="card">
 <h2>🚧 Curb & Gutter</h2>
 <div class="grid">
@@ -176,41 +211,40 @@ button{
 
 <script>
 const n=v=>isNaN(v)||v<=0?0:parseFloat(v);
-const m=v=>unit.value==="imperial"?v*0.3048:v;
-const i=v=>unit.value==="imperial"?v*0.0254:v;
+const toM=(v,u)=>u==="ft"?v*0.3048:u==="in"?v*0.0254:u==="cm"?v*0.01:u==="mm"?v*0.001:v;
 
 function output(v){
   v*=1.05;
-  const bags=Math.ceil(v*parseFloat(grade.value));
   return `
   Volume: <b>${v.toFixed(2)} m³</b><br>
   Cubic Feet: <b>${(v*35.3147).toFixed(2)} ft³</b><br>
-  Cement Bags (50kg): <b>${bags}</b><br>
-  Concrete Weight: <b>${(v*2400).toFixed(0)} kg</b>
-  `;
+  Cement Bags (50kg): <b>${Math.ceil(v*20)}</b><br>
+  Weight: <b>${(v*2400).toFixed(0)} kg</b>`;
 }
 
 function calcSlab(){
-  const v=m(n(slL.value))*m(n(slW.value))*i(n(slT.value))*n(slQ.value);
+  const v=toM(n(slL.value),slLU.value)*toM(n(slW.value),slWU.value)*toM(n(slT.value),slTU.value)*n(slQ.value);
   slabRes.innerHTML=v?output(v):"—";
 }
+
 function calcCylinder(){
-  const v=Math.PI*(m(n(cyD.value))/2)**2*m(n(cyH.value))*n(cyQ.value);
+  const v=Math.PI*(toM(n(cyD.value),cyDU.value)/2)**2*toM(n(cyH.value),cyHU.value)*n(cyQ.value);
   cyRes.innerHTML=v?output(v):"—";
 }
+
 function calcCurb(){
-  const a=m(n(cgH.value))*m(n(cgCW.value))+m(n(cgGW.value))*m(n(cgGD.value));
-  const v=a*m(n(cgL.value));
+  const v=(n(cgH.value)*n(cgCW.value)+n(cgGW.value)*n(cgGD.value))*n(cgL.value);
   cgRes.innerHTML=v?output(v):"—";
 }
+
 function calcStairs(){
-  const v=m(n(stR.value))*m(n(stN.value))*m(n(stW.value))*n(stS.value);
+  const v=(n(stR.value)*n(stN.value)*n(stW.value)*n(stS.value))/2;
   stRes.innerHTML=v?output(v):"—";
 }
+
 function calcRebar(){
   const w=(n(rbD.value)**2*n(rbL.value))/162*n(rbQ.value);
-  rbRes.innerHTML=w?
-  `Weight: <b>${w.toFixed(2)} kg</b><br>Tonnes: <b>${(w/1000).toFixed(3)}</b>`:"—";
+  rbRes.innerHTML=w?`Weight: <b>${w.toFixed(2)} kg</b><br>Tonnes: <b>${(w/1000).toFixed(3)}</b>`:"—";
 }
 </script>
 

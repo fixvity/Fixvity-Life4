@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Construction & Architecture Calculator – World Standard</title>
+<title>Concrete Calculator – World Standard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -10,9 +10,8 @@
   --primary:#2563eb;
   --bg:#f4f7fb;
   --card:#ffffff;
-  --radius:16px;
+  --radius:14px;
   --text:#1f2937;
-  --muted:#6b7280;
 }
 *{box-sizing:border-box}
 body{
@@ -21,16 +20,16 @@ body{
   background:var(--bg);
   color:var(--text);
 }
-.container{max-width:1200px;margin:auto;padding:16px}
+.container{max-width:1100px;margin:auto;padding:16px}
 .card{
   background:var(--card);
   border-radius:var(--radius);
-  padding:22px;
-  box-shadow:0 14px 36px rgba(0,0,0,.08);
+  padding:20px;
+  box-shadow:0 12px 30px rgba(0,0,0,.08);
   margin-bottom:20px;
 }
 h1,h2{margin:0 0 10px;color:var(--primary)}
-small{color:var(--muted)}
+small{color:#6b7280}
 
 .grid{
   display:grid;
@@ -42,8 +41,8 @@ small{color:var(--muted)}
 .field{display:flex;flex-direction:column}
 .field label{font-size:14px;margin-bottom:6px}
 .field input,.field select{
-  height:50px;
-  padding:12px;
+  height:48px;
+  padding:10px;
   font-size:15px;
   border-radius:10px;
   border:1px solid #ddd;
@@ -51,11 +50,11 @@ small{color:var(--muted)}
 
 button{
   width:100%;
-  padding:15px;
+  padding:14px;
   background:var(--primary);
   color:#fff;
   border:none;
-  border-radius:14px;
+  border-radius:12px;
   font-size:16px;
   cursor:pointer;
 }
@@ -68,19 +67,6 @@ button{
   font-size:15px;
   line-height:1.6;
 }
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:12px;
-}
-th,td{
-  padding:10px;
-  border-bottom:1px solid #e5e7eb;
-  text-align:left;
-  font-size:14px;
-}
-th{background:#f1f5f9}
 
 @media print{
   button,.controls{display:none}
@@ -95,15 +81,26 @@ th{background:#f1f5f9}
 
 <!-- HEADER -->
 <div class="card controls">
-<h1>Construction & Architecture Calculator</h1>
-<small>Material breakdown · Metric / Imperial · Engineering-accurate</small>
+<h1>Concrete Calculator</h1>
+<small>Slabs · Columns · Curb & Gutter · Stairs · Rebar — IS / World Standard</small>
 
 <div class="grid">
   <div class="field">
     <label>Measurement System</label>
-    <select id="unitSystem">
-      <option value="metric">Metric (meters)</option>
-      <option value="imperial">Imperial (feet / inches)</option>
+    <select id="unit">
+      <option value="metric">Metric (m)</option>
+      <option value="imperial">Imperial (ft / in)</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Concrete Grade (IS Standard)</label>
+    <select id="grade">
+      <option value="6">M10 (PCC)</option>
+      <option value="6.8">M15</option>
+      <option value="8" selected>M20 (RCC)</option>
+      <option value="9.2">M25</option>
+      <option value="10">M30</option>
     </select>
   </div>
 </div>
@@ -111,175 +108,109 @@ th{background:#f1f5f9}
 <button onclick="window.print()">🖨️ Print / Export PDF</button>
 </div>
 
-<!-- CONCRETE -->
+<!-- SLAB -->
 <div class="card">
-<h2>🧱 Concrete Calculator</h2>
+<h2>🧱 Slabs / Footings / Walls</h2>
 <div class="grid">
-  <div class="field"><label>Length</label><input id="cLen" type="number" min="0"></div>
-  <div class="field"><label>Width</label><input id="cWid" type="number" min="0"></div>
-  <div class="field"><label>Thickness</label><input id="cThk" type="number" min="0"></div>
+  <div class="field"><label>Length</label><input id="slL" type="number"></div>
+  <div class="field"><label>Width</label><input id="slW" type="number"></div>
+  <div class="field"><label>Thickness</label><input id="slT" type="number"></div>
+  <div class="field"><label>Quantity</label><input id="slQ" type="number" value="1"></div>
 </div>
-<button onclick="calcConcrete()">Calculate</button>
-<div class="result" id="resConcrete">—</div>
-<div id="tableConcrete"></div>
+<button onclick="calcSlab()">Calculate</button>
+<div class="result" id="slabRes">—</div>
 </div>
 
-<!-- COST -->
+<!-- CYLINDER -->
 <div class="card">
-<h2>💰 Construction Cost</h2>
+<h2>🟤 Hole / Column / Round Footing</h2>
 <div class="grid">
-  <div class="field"><label>Area</label><input id="costArea" type="number" min="0"></div>
-  <div class="field"><label>Cost per unit</label><input id="costRate" type="number" min="0"></div>
+  <div class="field"><label>Diameter</label><input id="cyD" type="number"></div>
+  <div class="field"><label>Height</label><input id="cyH" type="number"></div>
+  <div class="field"><label>Quantity</label><input id="cyQ" type="number" value="1"></div>
 </div>
-<button onclick="calcCost()">Calculate</button>
-<div class="result" id="resCost">—</div>
+<button onclick="calcCylinder()">Calculate</button>
+<div class="result" id="cyRes">—</div>
 </div>
 
-<!-- SQUARE FOOTAGE -->
+<!-- CURB -->
 <div class="card">
-<h2>📐 Square Footage</h2>
+<h2>🚧 Curb & Gutter</h2>
 <div class="grid">
-  <div class="field"><label>Length</label><input id="sfLen" type="number" min="0"></div>
-  <div class="field"><label>Width</label><input id="sfWid" type="number" min="0"></div>
+  <div class="field"><label>Curb Height</label><input id="cgH" type="number"></div>
+  <div class="field"><label>Curb Width</label><input id="cgCW" type="number"></div>
+  <div class="field"><label>Gutter Width</label><input id="cgGW" type="number"></div>
+  <div class="field"><label>Gutter Depth</label><input id="cgGD" type="number"></div>
+  <div class="field"><label>Length</label><input id="cgL" type="number"></div>
 </div>
-<button onclick="calcSquare()">Calculate</button>
-<div class="result" id="resSquare">—</div>
+<button onclick="calcCurb()">Calculate</button>
+<div class="result" id="cgRes">—</div>
 </div>
 
-<!-- ROOF -->
+<!-- STAIRS -->
 <div class="card">
-<h2>🏠 Roofing</h2>
+<h2>🪜 Concrete Stairs</h2>
 <div class="grid">
-  <div class="field"><label>Roof Area</label><input id="roofArea" type="number" min="0"></div>
+  <div class="field"><label>Rise</label><input id="stR" type="number"></div>
+  <div class="field"><label>Run</label><input id="stN" type="number"></div>
+  <div class="field"><label>Width</label><input id="stW" type="number"></div>
+  <div class="field"><label>Steps</label><input id="stS" type="number"></div>
 </div>
-<button onclick="calcRoof()">Calculate</button>
-<div class="result" id="resRoof">—</div>
+<button onclick="calcStairs()">Calculate</button>
+<div class="result" id="stRes">—</div>
 </div>
 
-<!-- BRICKS -->
+<!-- REBAR -->
 <div class="card">
-<h2>🧱 Brick Calculator</h2>
+<h2>🧮 Rebar Estimator</h2>
 <div class="grid">
-  <div class="field"><label>Wall Area</label><input id="brickArea" type="number" min="0"></div>
+  <div class="field"><label>Diameter (mm)</label><input id="rbD" type="number"></div>
+  <div class="field"><label>Length (m)</label><input id="rbL" type="number"></div>
+  <div class="field"><label>Bars</label><input id="rbQ" type="number"></div>
 </div>
-<button onclick="calcBricks()">Calculate</button>
-<div class="result" id="resBricks">—</div>
-</div>
-
-<!-- FLOOR -->
-<div class="card">
-<h2>🪵 Flooring</h2>
-<div class="grid">
-  <div class="field"><label>Floor Area</label><input id="floorArea" type="number" min="0"></div>
-</div>
-<button onclick="calcFloor()">Calculate</button>
-<div class="result" id="resFloor">—</div>
-</div>
-
-<!-- PAINT -->
-<div class="card">
-<h2>🎨 Paint</h2>
-<div class="grid">
-  <div class="field"><label>Wall Area</label><input id="paintArea" type="number" min="0"></div>
-</div>
-<button onclick="calcPaint()">Calculate</button>
-<div class="result" id="resPaint">—</div>
-</div>
-
-<!-- STEEL -->
-<div class="card">
-<h2>⚙️ Steel Weight</h2>
-<div class="grid">
-  <div class="field"><label>Diameter (mm)</label><input id="steelDia" type="number" min="0"></div>
-  <div class="field"><label>Length (m)</label><input id="steelLen" type="number" min="0"></div>
-</div>
-<button onclick="calcSteel()">Calculate</button>
-<div class="result" id="resSteel">—</div>
-</div>
-
-<!-- STAIR -->
-<div class="card">
-<h2>🪜 Staircase</h2>
-<div class="grid">
-  <div class="field"><label>Total Height</label><input id="stairHeight" type="number" min="0"></div>
-  <div class="field"><label>Riser Height</label><input id="stairRiser" type="number" min="0.1"></div>
-</div>
-<button onclick="calcStair()">Calculate</button>
-<div class="result" id="resStair">—</div>
-</div>
-
-<!-- HVAC -->
-<div class="card">
-<h2>❄️ HVAC Load</h2>
-<div class="grid">
-  <div class="field"><label>Room Area</label><input id="hvacArea" type="number" min="0"></div>
-</div>
-<button onclick="calcHVAC()">Calculate</button>
-<div class="result" id="resHVAC">—</div>
+<button onclick="calcRebar()">Calculate</button>
+<div class="result" id="rbRes">—</div>
 </div>
 
 </div>
 
 <script>
-const $=id=>document.getElementById(id);
 const n=v=>isNaN(v)||v<=0?0:parseFloat(v);
+const m=v=>unit.value==="imperial"?v*0.3048:v;
+const i=v=>unit.value==="imperial"?v*0.0254:v;
 
-function calcConcrete(){
- let l=n(cLen.value), w=n(cWid.value), t=n(cThk.value);
- if(!l||!w||!t){resConcrete.textContent="—";tableConcrete.innerHTML="";return;}
-
- if(unitSystem.value==="imperial"){
-   l*=0.3048; w*=0.3048; t*=0.0254;
- }
-
- const vol=l*w*t*1.05;
- const cementKg=vol*(1/5)*1440;
-
- resConcrete.innerHTML=`Volume: <b>${vol.toFixed(2)} m³</b> (incl. 5% waste)`;
- tableConcrete.innerHTML=`
- <table>
- <tr><th>Material</th><th>Quantity</th></tr>
- <tr><td>Cement</td><td>${cementKg.toFixed(0)} kg</td></tr>
- <tr><td>Sand</td><td>${(vol*1.5/5).toFixed(2)} m³</td></tr>
- <tr><td>Aggregate</td><td>${(vol*3/5).toFixed(2)} m³</td></tr>
- </table>`;
+function output(v){
+  v*=1.05;
+  const bags=Math.ceil(v*parseFloat(grade.value));
+  return `
+  Volume: <b>${v.toFixed(2)} m³</b><br>
+  Cubic Feet: <b>${(v*35.3147).toFixed(2)} ft³</b><br>
+  Cement Bags (50kg): <b>${bags}</b><br>
+  Concrete Weight: <b>${(v*2400).toFixed(0)} kg</b>
+  `;
 }
 
-function calcCost(){
- const v=n(costArea.value)*n(costRate.value);
- resCost.innerHTML=v?`Estimated Cost: <b>${v.toLocaleString()}</b>`:"—";
+function calcSlab(){
+  const v=m(n(slL.value))*m(n(slW.value))*i(n(slT.value))*n(slQ.value);
+  slabRes.innerHTML=v?output(v):"—";
 }
-function calcSquare(){
- const a=n(sfLen.value)*n(sfWid.value);
- resSquare.innerHTML=a?`Area: <b>${a.toFixed(2)}</b>`:"—";
+function calcCylinder(){
+  const v=Math.PI*(m(n(cyD.value))/2)**2*m(n(cyH.value))*n(cyQ.value);
+  cyRes.innerHTML=v?output(v):"—";
 }
-function calcRoof(){
- const v=n(roofArea.value)/100;
- resRoof.innerHTML=v?`Roofing Squares: <b>${v.toFixed(2)}</b>`:"—";
+function calcCurb(){
+  const a=m(n(cgH.value))*m(n(cgCW.value))+m(n(cgGW.value))*m(n(cgGD.value));
+  const v=a*m(n(cgL.value));
+  cgRes.innerHTML=v?output(v):"—";
 }
-function calcBricks(){
- const v=Math.ceil(n(brickArea.value)*7);
- resBricks.innerHTML=v?`Bricks Required: <b>${v}</b>`:"—";
+function calcStairs(){
+  const v=m(n(stR.value))*m(n(stN.value))*m(n(stW.value))*n(stS.value);
+  stRes.innerHTML=v?output(v):"—";
 }
-function calcFloor(){
- const v=n(floorArea.value)*1.05;
- resFloor.innerHTML=v?`Area incl. waste: <b>${v.toFixed(2)}</b>`:"—";
-}
-function calcPaint(){
- const v=n(paintArea.value)/350;
- resPaint.innerHTML=v?`Paint: <b>${v.toFixed(2)} gallons</b>`:"—";
-}
-function calcSteel(){
- const v=(n(steelDia.value)**2*n(steelLen.value))/162;
- resSteel.innerHTML=v?`Weight: <b>${v.toFixed(2)} kg</b>`:"—";
-}
-function calcStair(){
- const h=n(stairHeight.value), r=n(stairRiser.value);
- resStair.innerHTML=(h&&r)?`Steps: <b>${Math.round(h/r)}</b>`:"—";
-}
-function calcHVAC(){
- const b=n(hvacArea.value)*20;
- resHVAC.innerHTML=b?`Cooling Load: <b>${b.toLocaleString()} BTU (${(b/12000).toFixed(2)} TR)</b>`:"—";
+function calcRebar(){
+  const w=(n(rbD.value)**2*n(rbL.value))/162*n(rbQ.value);
+  rbRes.innerHTML=w?
+  `Weight: <b>${w.toFixed(2)} kg</b><br>Tonnes: <b>${(w/1000).toFixed(3)}</b>`:"—";
 }
 </script>
 
